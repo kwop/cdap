@@ -24,7 +24,9 @@ import io.cdap.cdap.api.artifact.ArtifactScope;
 import io.cdap.cdap.api.artifact.ArtifactVersion;
 import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
+import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
+import io.cdap.cdap.api.dataset.lib.KeyValue;
 import io.cdap.cdap.etl.api.Engine;
 import io.cdap.cdap.etl.api.ErrorTransform;
 import io.cdap.cdap.etl.api.MultiOutputPipelineConfigurable;
@@ -41,6 +43,7 @@ import io.cdap.cdap.etl.api.batch.BatchSink;
 import io.cdap.cdap.etl.api.batch.BatchSource;
 import io.cdap.cdap.etl.api.condition.Condition;
 import io.cdap.cdap.etl.api.engine.SQLEngine;
+import io.cdap.cdap.etl.api.engine.SQLEngineException;
 import io.cdap.cdap.etl.api.engine.SQLOperationResult;
 import io.cdap.cdap.etl.api.join.AutoJoinerContext;
 import io.cdap.cdap.etl.api.join.JoinCondition;
@@ -56,6 +59,7 @@ import io.cdap.cdap.etl.proto.v2.ETLBatchConfig;
 import io.cdap.cdap.etl.proto.v2.ETLConfig;
 import io.cdap.cdap.etl.proto.v2.ETLPlugin;
 import io.cdap.cdap.etl.proto.v2.ETLStage;
+import io.cdap.cdap.etl.proto.v2.ETLTransformationPushdown;
 import io.cdap.cdap.etl.proto.v2.spec.PipelineSpec;
 import io.cdap.cdap.etl.proto.v2.spec.PluginSpec;
 import io.cdap.cdap.etl.proto.v2.spec.StageSpec;
@@ -867,9 +871,7 @@ public class PipelineSpecGeneratorTest {
     ETLBatchConfig config = ETLBatchConfig.builder()
       .setTimeSchedule("* * * * *")
       .addStage(new ETLStage("action", MOCK_ACTION))
-      .setTransformationPushdown(true)
-      .setTransformationPushdownType("some")
-      .setTransformationPushdownEngine(MOCK_SQL_ENGINE)
+      .setTransformationPushdown(new ETLTransformationPushdown(MOCK_SQL_ENGINE))
       .build();
     PipelineSpec actual = specGenerator.generateSpec(config);
 
@@ -1137,50 +1139,59 @@ public class PipelineSpecGeneratorTest {
     }
   }
 
-  private static class MockSQLEngine implements SQLEngine {
-
+  private static class MockSQLEngine implements SQLEngine<Object, Object, Object, Object> {
     @Override
-    public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
-      // no-op
-    }
-
-    @Override
-    public void prepareRun(BatchContext context) throws Exception {
-      // no-op
-    }
-
-    @Override
-    public void onRunFinish(boolean succeeded, BatchContext context) {
-      // no-op
-    }
-
-    @Override
-    public OutputFormatProvider push(String tableName) {
+    public OutputFormatProvider getPushProvider(String tableName) throws SQLEngineException {
       return null;
     }
 
     @Override
-    public InputFormatProvider pull(String tableName) {
+    public InputFormatProvider getPullProvider(String tableName) throws SQLEngineException {
       return null;
     }
 
     @Override
-    public boolean exists(String tableName) {
+    public boolean exists(String tableName) throws SQLEngineException {
       return false;
     }
 
     @Override
-    public boolean canJoin(JoinDefinition joinDefinition) {
+    public boolean canJoin(JoinDefinition definition) {
       return false;
     }
 
     @Override
-    public SQLOperationResult join(String tableName, JoinDefinition joinDefinition) {
+    public SQLOperationResult join(String tableName, JoinDefinition definition) throws SQLEngineException {
       return null;
     }
 
     @Override
     public void cleanup(boolean forceStop) {
+
+    }
+
+    @Override
+    public Transform<StructuredRecord, KeyValue<Object, Object>> toKeyValue() {
+      return null;
+    }
+
+    @Override
+    public Transform<KeyValue<Object, Object>, StructuredRecord> fromKeyValue() {
+      return null;
+    }
+
+    @Override
+    public void configurePipeline(PipelineConfigurer pipelineConfigurer) {
+
+    }
+
+    @Override
+    public void prepareRun(BatchContext context) throws Exception {
+
+    }
+
+    @Override
+    public void onRunFinish(boolean succeeded, BatchContext context) {
 
     }
   }

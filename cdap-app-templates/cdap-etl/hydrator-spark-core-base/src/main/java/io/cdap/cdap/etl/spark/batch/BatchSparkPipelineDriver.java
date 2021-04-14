@@ -83,7 +83,7 @@ public class BatchSparkPipelineDriver extends SparkPipelineRunner implements Jav
   private transient SparkBatchSinkFactory sinkFactory;
   private transient DatasetContext datasetContext;
   private transient Map<String, Integer> stagePartitions;
-  private transient SQLEngine sqlEngine = null;
+  private transient BatchSQLEngineAdapter sqlEngineAdapter = null;
 
   @Override
   protected SparkCollection<RecordInfo<Object>> getSource(StageSpec stageSpec,
@@ -172,7 +172,7 @@ public class BatchSparkPipelineDriver extends SparkPipelineRunner implements Jav
           "sqlengine_" + Strings.nullToEmpty(phaseSpec.getSqlEngineStageSpec().getPlugin().getName()).toLowerCase();
         Object sqlEngineInstance = pluginInstantiator.newPluginInstance(sqlEngineStage);
         if (sqlEngineInstance instanceof SQLEngine) {
-          sqlEngine = (SQLEngine) sqlEngineInstance;
+          sqlEngineAdapter = new BatchSQLEngineAdapter((SQLEngine<?, ?, ?, ?>) sqlEngineInstance);
         }
         //TODO: Add validations and error handling in case this instance cannot be instantiated
       }

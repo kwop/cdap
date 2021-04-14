@@ -14,13 +14,14 @@
  * the License.
  */
 
-package io.cdap.cdap.etl.api.engine;
+package io.cdap.cdap.etl.engine;
 
 /**
- * Resulting status of a SQL Engine operation
+ * Status for SQL Engine Jobs.
  */
-public enum SQLOperationStatus {
-  SUCCESSFUL,
-  FAILED,
-  ABORTED
+public enum SQLEngineJobStatus {
+  CREATED,
+  RUNNING,
+  COMPLETED,
+  FAILED
 }

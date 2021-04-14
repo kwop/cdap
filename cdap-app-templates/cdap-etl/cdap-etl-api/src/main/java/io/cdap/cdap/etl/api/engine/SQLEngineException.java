@@ -17,10 +17,10 @@
 package io.cdap.cdap.etl.api.engine;
 
 /**
- * Resulting status of a SQL Engine operation
+ * Class used to represent exceptions thrown by a SQL Engine.
  */
-public enum SQLOperationStatus {
-  SUCCESSFUL,
-  FAILED,
-  ABORTED
+public class SQLEngineException extends RuntimeException {
+  public SQLEngineException(Throwable cause) {
+    super("Error when executing operation on SQL Engine", cause);
+  }
 }

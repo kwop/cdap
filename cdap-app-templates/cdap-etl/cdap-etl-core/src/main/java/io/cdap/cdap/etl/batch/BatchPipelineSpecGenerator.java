@@ -67,15 +67,16 @@ public class BatchPipelineSpecGenerator extends PipelineSpecGenerator<ETLBatchCo
   }
 
   private StageSpec configureSqlEngine(ETLBatchConfig config) throws ValidationException {
-    if (!config.isTransformationPushdown() || config.getTransformationPushdownEngine() == null) {
+    if (config.getTransformationPushdown() == null || config.getTransformationPushdown().getEngine() == null) {
       return null;
     }
 
     //Fixed name for SQL Engine config.
-    final String stageName =
-      "sqlengine_" + Strings.nullToEmpty(config.getTransformationPushdownEngine().getName()).toLowerCase();
+    String stageName =
+      "sqlengine_" + Strings.nullToEmpty(config.getTransformationPushdown().getEngine().getName()).toLowerCase();
 
-    ETLStage sqlEngineStage = new ETLStage(stageName, config.getTransformationPushdownEngine());
+    ETLStage sqlEngineStage =
+      new ETLStage(stageName, config.getTransformationPushdown().getEngine());
     DefaultPipelineConfigurer pipelineConfigurer =
       new DefaultPipelineConfigurer(pluginConfigurer, datasetConfigurer, stageName, engine,
                                     new DefaultStageConfigurer(stageName));

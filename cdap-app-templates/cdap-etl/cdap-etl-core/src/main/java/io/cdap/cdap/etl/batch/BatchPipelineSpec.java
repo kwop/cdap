@@ -84,9 +84,18 @@ public class BatchPipelineSpec extends PipelineSpec {
     return Objects.hash(super.hashCode(), endingActions, sqlEngineStageSpec);
   }
 
+  @Override
+  public String toString() {
+    return "BatchPipelineSpec{" +
+      "endingActions=" + endingActions +
+      ", sqlEngineStageSpec=" + sqlEngineStageSpec +
+      "} " + super.toString();
+  }
+
   public static Builder builder() {
     return new Builder();
   }
+
 
   /**
    * Builder for creating a BatchPipelineSpec.
