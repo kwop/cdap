@@ -19,6 +19,7 @@ package io.cdap.cdap.etl.mock.batch;
 import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
+import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.dataset.lib.KeyValue;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.Transform;
@@ -33,17 +34,17 @@ import io.cdap.cdap.etl.api.join.JoinDefinition;
  */
 public class MockSQLEngine implements SQLEngine<Object, Object, Object, Object> {
   @Override
-  public OutputFormatProvider getPushProvider(String tableName) throws SQLEngineException {
+  public OutputFormatProvider getPushProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
     return null;
   }
 
   @Override
-  public InputFormatProvider getPullProvider(String tableName) throws SQLEngineException {
+  public InputFormatProvider getPullProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
     return null;
   }
 
   @Override
-  public boolean exists(String tableName) throws SQLEngineException {
+  public boolean exists(String datasetName) throws SQLEngineException {
     return false;
   }
 
@@ -53,7 +54,7 @@ public class MockSQLEngine implements SQLEngine<Object, Object, Object, Object> 
   }
 
   @Override
-  public SQLOperationResult join(String tableName, JoinDefinition definition) throws SQLEngineException {
+  public SQLOperationResult join(String datasetName, JoinDefinition definition) throws SQLEngineException {
     return null;
   }
 

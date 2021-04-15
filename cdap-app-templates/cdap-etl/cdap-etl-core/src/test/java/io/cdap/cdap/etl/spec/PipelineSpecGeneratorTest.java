@@ -1141,17 +1141,17 @@ public class PipelineSpecGeneratorTest {
 
   private static class MockSQLEngine implements SQLEngine<Object, Object, Object, Object> {
     @Override
-    public OutputFormatProvider getPushProvider(String tableName) throws SQLEngineException {
+    public OutputFormatProvider getPushProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
       return null;
     }
 
     @Override
-    public InputFormatProvider getPullProvider(String tableName) throws SQLEngineException {
+    public InputFormatProvider getPullProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
       return null;
     }
 
     @Override
-    public boolean exists(String tableName) throws SQLEngineException {
+    public boolean exists(String datasetName) throws SQLEngineException {
       return false;
     }
 
@@ -1161,7 +1161,7 @@ public class PipelineSpecGeneratorTest {
     }
 
     @Override
-    public SQLOperationResult join(String tableName, JoinDefinition definition) throws SQLEngineException {
+    public SQLOperationResult join(String datasetName, JoinDefinition definition) throws SQLEngineException {
       return null;
     }
 

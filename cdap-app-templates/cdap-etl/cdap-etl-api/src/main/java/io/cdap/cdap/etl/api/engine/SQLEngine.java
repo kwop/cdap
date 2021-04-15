@@ -20,6 +20,7 @@ import io.cdap.cdap.api.annotation.Beta;
 import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
+import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.KeyValueBiTransform;
 import io.cdap.cdap.etl.api.PipelineConfigurable;
 import io.cdap.cdap.etl.api.SubmitterLifecycle;
@@ -49,53 +50,55 @@ public interface SQLEngine<KEY_OUT, VALUE_OUT, KEY_IN, VALUE_IN> extends Pipelin
   /**
    * Creates an Output Format Provided that can be used to push records into a SQL Engine.
    *
-   * After created, this table will be considered "locked" until the output has been committed.
+   * After created, this dataset will be considered "locked" until the output has been committed.
    *
-   * @param tableName The name of the table to use to store these records.
+   * @param datasetName The name of the dataset to use to store these records.
+   * @param datasetSchema the schema for this dataset.
    * @return an {@link OutputFormatProvider} instance that can be used to write records to the SQL Engine into the
-   * specified table.
+   * specified dataset.
    */
-  OutputFormatProvider getPushProvider(String tableName) throws SQLEngineException;
+  OutputFormatProvider getPushProvider(String datasetName, Schema datasetSchema) throws SQLEngineException;
 
   /**
-   * Creates an InputFormatProvider that can be used to pull records from the specified table.
-   * @param tableName the name of the table to pull records from
-   * @return AN {@link InputFormatProvider} instance that can be used to read records form the specified table in the
+   * Creates an InputFormatProvider that can be used to pull records from the specified dataset.
+   * @param datasetName the name of the dataset to pull records from.
+   * @param datasetSchema the schema for this dataset.
+   * @return AN {@link InputFormatProvider} instance that can be used to read records form the specified dataset in the
    * SQL Engine.
    */
-  InputFormatProvider getPullProvider(String tableName) throws SQLEngineException;
+  InputFormatProvider getPullProvider(String datasetName, Schema datasetSchema) throws SQLEngineException;
 
   /**
-   * Check if this table exists in the SQL Engine.
+   * Check if this dataset exists in the SQL Engine.
    *
-   * This is a blocking call. if the process to write records into a table is ongoing, this method will block until
+   * This is a blocking call. if the process to write records into a dataset is ongoing, this method will block until
    * the process completes. This ensures an accurate result for this operation.
    *
-   * @param tableName the table name
-   * @return boolean specifying if this table exists in the remote engine.
+   * @param datasetName the dataset name.
+   * @return boolean specifying if this dataset exists in the remote engine.
    */
-  boolean exists(String tableName) throws SQLEngineException;
+  boolean exists(String datasetName) throws SQLEngineException;
 
   /**
    * Check if the supplied Join Definition can be executed in this engine.
-   * @param definition the join definition to check
+   * @param definition the join definition to validate.
    * @return boolean specifying if this join operation can be executed in the SQl Engine.
    */
   boolean canJoin(JoinDefinition definition);
 
   /**
-   * Executes the join operation defined by the supplied join Definition and stores the result in the defined table.
+   * Executes the join operation defined by the supplied join Definition and stores the result in the defined dataset.
    *
    * The returned {@link Future} can be used to determine the status of this task.
    *
-   * @param tableName the name of the table to use to store results
-   * @param definition the join definition
+   * @param datasetName the name of the dataset to use to store results.
+   * @param definition the join definition, which contains the schema for the resulting dataset.
    * @return the {@link SQLOperationResult} instance with information about the execution of this task.
    */
-  SQLOperationResult join(String tableName, JoinDefinition definition) throws SQLEngineException;
+  SQLOperationResult join(String datasetName, JoinDefinition definition) throws SQLEngineException;
 
   /**
-   * Deletes all temporary tables and cleans up all temporary data from the SQL engine
+   * Deletes all temporary datasets and cleans up all temporary data from the SQL engine.
    * @param forceStop boolean specifying if all running tasks should be stopped at this time (if any are running).
    */
   void cleanup(boolean forceStop);

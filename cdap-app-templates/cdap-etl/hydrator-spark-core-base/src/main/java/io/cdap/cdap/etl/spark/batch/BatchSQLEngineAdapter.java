@@ -20,6 +20,7 @@ import com.google.common.base.Objects;
 import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
+import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.etl.api.engine.SQLEngine;
 import io.cdap.cdap.etl.api.engine.SQLOperationResult;
 import io.cdap.cdap.etl.api.join.JoinDefinition;
@@ -74,9 +75,10 @@ public class BatchSQLEngineAdapter {
    */
   @SuppressWarnings("unchecked,raw")
   public SQLEngineJob<?> push(String tableName,
+                              Schema schema,
                               SparkCollection<StructuredRecord> collection) {
     CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-      OutputFormatProvider outputFormatProvider = sqlEngine.getPushProvider(tableName);
+      OutputFormatProvider outputFormatProvider = sqlEngine.getPushProvider(tableName, schema);
       JavaPairRDD<?, ?> pairRdd =
         ((JavaRDD) collection.getUnderlying()).flatMapToPair(toPairFunction);
       RDDUtils.saveUsingOutputFormat(outputFormatProvider, pairRdd);
@@ -97,10 +99,12 @@ public class BatchSQLEngineAdapter {
    * @return Job representing this pull operation.
    */
   @SuppressWarnings("unchecked,raw")
-  public SQLEngineJob<JavaRDD<StructuredRecord>> pull(String tableName, JavaSparkContext jsc) {
+  public SQLEngineJob<JavaRDD<StructuredRecord>> pull(String tableName,
+                                                      Schema schema,
+                                                      JavaSparkContext jsc) {
     CompletableFuture<JavaRDD<StructuredRecord>> future = CompletableFuture.supplyAsync(() -> {
 
-      InputFormatProvider inputFormatProvider = sqlEngine.getPullProvider(tableName);
+      InputFormatProvider inputFormatProvider = sqlEngine.getPullProvider(tableName, schema);
 
       ClassLoader classLoader = Objects.firstNonNull(currentThread().getContextClassLoader(),
                                                      getClass().getClassLoader());
