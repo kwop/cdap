@@ -17,24 +17,19 @@
 package io.cdap.cdap.etl.api;
 
 import io.cdap.cdap.api.annotation.Beta;
-import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.dataset.lib.KeyValue;
 
 /**
- * Interface for an entity which allows the transformation between an object of a given Type into and from KeyValue
- * pairs.
+ * Interface for an entity which allows the transformation between an object of a given Type from a KeyValue pair.
  *
  * This interface is used when mapping records into and out of storage engines, and allows us to reuse some of the
  * logic present in our exisitng Batch Sources and Batch Sinks.
  *
  * @param <TYPE> The Record Type
- * @param <KEY_OUT> Type for output key when mapping records
- * @param <VALUE_OUT> Type for output value when mapping records
  * @param <KEY_IN> Type for input key when building records
  * @param <VALUE_IN> Type for input value when building records
  */
 @Beta
-public interface KeyValueBiTransform<TYPE, KEY_OUT, VALUE_OUT, KEY_IN, VALUE_IN> {
-  Transform<TYPE, KeyValue<KEY_OUT, VALUE_OUT>> toKeyValue();
+public interface FromKeyValueTransform<TYPE, KEY_IN, VALUE_IN> {
   Transform<KeyValue<KEY_IN, VALUE_IN>, TYPE> fromKeyValue();
 }

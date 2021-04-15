@@ -167,9 +167,9 @@ public class BatchSparkPipelineDriver extends SparkPipelineRunner implements Jav
         sec.getRuntimeArguments().getOrDefault(Constants.CACHE_FUNCTIONS, Boolean.TRUE.toString()));
 
       // Initialize SQL engine instance if needed.
-      if (phaseSpec.getSqlEngineStageSpec() != null) {
+      if (phaseSpec.getSQLEngineStageSpec() != null) {
         String sqlEngineStage =
-          "sqlengine_" + Strings.nullToEmpty(phaseSpec.getSqlEngineStageSpec().getPlugin().getName()).toLowerCase();
+          "sqlengine_" + Strings.nullToEmpty(phaseSpec.getSQLEngineStageSpec().getPlugin().getName()).toLowerCase();
         Object sqlEngineInstance = pluginInstantiator.newPluginInstance(sqlEngineStage);
         if (sqlEngineInstance instanceof SQLEngine) {
           sqlEngineAdapter = new BatchSQLEngineAdapter((SQLEngine<?, ?, ?, ?>) sqlEngineInstance);

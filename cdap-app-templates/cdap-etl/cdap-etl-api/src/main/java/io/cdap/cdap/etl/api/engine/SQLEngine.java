@@ -21,9 +21,10 @@ import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
-import io.cdap.cdap.etl.api.KeyValueBiTransform;
+import io.cdap.cdap.etl.api.FromKeyValueTransform;
 import io.cdap.cdap.etl.api.PipelineConfigurable;
 import io.cdap.cdap.etl.api.SubmitterLifecycle;
+import io.cdap.cdap.etl.api.ToKeyValueTransform;
 import io.cdap.cdap.etl.api.batch.BatchContext;
 import io.cdap.cdap.etl.api.join.JoinDefinition;
 
@@ -43,8 +44,9 @@ import java.util.concurrent.Future;
  * @param <VALUE_IN> The type for the Input Value when building a StructuredRecord
  */
 @Beta
-public interface SQLEngine<KEY_OUT, VALUE_OUT, KEY_IN, VALUE_IN> extends PipelineConfigurable,
-  SubmitterLifecycle<BatchContext>, KeyValueBiTransform<StructuredRecord, KEY_OUT, VALUE_OUT, KEY_IN, VALUE_IN> {
+public interface SQLEngine<KEY_IN, VALUE_IN, KEY_OUT, VALUE_OUT> extends PipelineConfigurable,
+  SubmitterLifecycle<BatchContext>, FromKeyValueTransform<StructuredRecord, KEY_IN, VALUE_IN>,
+  ToKeyValueTransform<StructuredRecord, KEY_OUT, VALUE_OUT> {
   String PLUGIN_TYPE = "sqlengine";
 
   /**

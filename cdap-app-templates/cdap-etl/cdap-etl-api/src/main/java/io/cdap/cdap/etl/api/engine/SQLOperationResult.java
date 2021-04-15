@@ -21,14 +21,14 @@ package io.cdap.cdap.etl.api.engine;
  */
 public class SQLOperationResult {
   private final SQLOperationStatus status;
-  private final String tableName;
+  private final String datasetName;
   private final long numAffectedRecords;
 
   public SQLOperationResult(SQLOperationStatus status,
-                            String tableName,
+                            String datasetName,
                             long numAffectedRecords) {
     this.status = status;
-    this.tableName = tableName;
+    this.datasetName = datasetName;
     this.numAffectedRecords = numAffectedRecords;
   }
 
@@ -36,8 +36,8 @@ public class SQLOperationResult {
     return status;
   }
 
-  public String getTableName() {
-    return tableName;
+  public String getDatasetName() {
+    return datasetName;
   }
 
   public long getNumAffectedRecords() {

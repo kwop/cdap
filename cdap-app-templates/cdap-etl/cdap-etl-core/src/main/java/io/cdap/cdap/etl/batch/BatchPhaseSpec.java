@@ -84,7 +84,7 @@ public class BatchPhaseSpec extends PhaseSpec {
     return isPipelineContainsCondition;
   }
 
-  public StageSpec getSqlEngineStageSpec() {
+  public StageSpec getSQLEngineStageSpec() {
     return sqlEngineStageSpec;
   }
 
