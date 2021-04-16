@@ -14,22 +14,29 @@
  * the License.
  */
 
-package io.cdap.cdap.etl.api;
+package io.cdap.cdap.etl.api.engine.sql.request;
 
 import io.cdap.cdap.api.annotation.Beta;
-import io.cdap.cdap.api.dataset.lib.KeyValue;
+import io.cdap.cdap.api.data.schema.Schema;
 
 /**
- * Interface for an entity which allows the transformation between an object of a given Type into a KeyValue pair.
- *
- * This interface is used when mapping records into and out of storage engines, and allows us to reuse some of the
- * logic present in our existing Batch Sinks.
- *
- * @param <TYPE> The Record Type
- * @param <KEY_OUT> Type for output key when mapping records
- * @param <VALUE_OUT> Type for output value when mapping records
+ * Class representing a Request to push a dataset to a SQL engine.
  */
 @Beta
-public interface ToKeyValueTransform<TYPE, KEY_OUT, VALUE_OUT> {
-  Transform<TYPE, KeyValue<KEY_OUT, VALUE_OUT>> toKeyValue();
+public class SQLPushRequest {
+  private final String datasetName;
+  private final Schema datasetSchema;
+
+  public SQLPushRequest(String datasetName, Schema datasetSchema) {
+    this.datasetName = datasetName;
+    this.datasetSchema = datasetSchema;
+  }
+
+  public String getDatasetName() {
+    return datasetName;
+  }
+
+  public Schema getDatasetSchema() {
+    return datasetSchema;
+  }
 }

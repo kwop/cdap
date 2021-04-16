@@ -14,33 +14,29 @@
  * the License.
  */
 
-package io.cdap.cdap.etl.api.engine;
+package io.cdap.cdap.etl.api.engine.sql.request;
+
+import io.cdap.cdap.api.annotation.Beta;
+import io.cdap.cdap.etl.api.join.JoinDefinition;
 
 /**
- * Represents the result of a SQL Engine operation.
+ * Class representing a Request to execute as join operation on a SQL engine.
  */
-public class SQLOperationResult {
-  private final SQLOperationStatus status;
+@Beta
+public class SQLJoinRequest {
   private final String datasetName;
-  private final long numAffectedRecords;
+  private final JoinDefinition joinDefinition;
 
-  public SQLOperationResult(SQLOperationStatus status,
-                            String datasetName,
-                            long numAffectedRecords) {
-    this.status = status;
+  public SQLJoinRequest(String datasetName, JoinDefinition joinDefinition) {
     this.datasetName = datasetName;
-    this.numAffectedRecords = numAffectedRecords;
-  }
-
-  public SQLOperationStatus getStatus() {
-    return status;
+    this.joinDefinition = joinDefinition;
   }
 
   public String getDatasetName() {
     return datasetName;
   }
 
-  public long getNumAffectedRecords() {
-    return numAffectedRecords;
+  public JoinDefinition getJoinDefinition() {
+    return joinDefinition;
   }
 }

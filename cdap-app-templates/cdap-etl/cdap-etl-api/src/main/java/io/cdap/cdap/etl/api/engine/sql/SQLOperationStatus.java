@@ -14,7 +14,7 @@
  * the License.
  */
 
-package io.cdap.cdap.etl.api.engine;
+package io.cdap.cdap.etl.api.engine.sql;
 
 /**
  * Resulting status of a SQL Engine operation

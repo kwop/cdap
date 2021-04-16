@@ -42,9 +42,12 @@ import io.cdap.cdap.etl.api.batch.BatchJoiner;
 import io.cdap.cdap.etl.api.batch.BatchSink;
 import io.cdap.cdap.etl.api.batch.BatchSource;
 import io.cdap.cdap.etl.api.condition.Condition;
-import io.cdap.cdap.etl.api.engine.SQLEngine;
-import io.cdap.cdap.etl.api.engine.SQLEngineException;
-import io.cdap.cdap.etl.api.engine.SQLOperationResult;
+import io.cdap.cdap.etl.api.engine.sql.SQLEngine;
+import io.cdap.cdap.etl.api.engine.sql.SQLEngineException;
+import io.cdap.cdap.etl.api.engine.sql.SQLOperationResult;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLJoinRequest;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLPullRequest;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLPushRequest;
 import io.cdap.cdap.etl.api.join.AutoJoinerContext;
 import io.cdap.cdap.etl.api.join.JoinCondition;
 import io.cdap.cdap.etl.api.join.JoinDefinition;
@@ -1141,12 +1144,12 @@ public class PipelineSpecGeneratorTest {
 
   private static class MockSQLEngine implements SQLEngine<Object, Object, Object, Object> {
     @Override
-    public OutputFormatProvider getPushProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
+    public OutputFormatProvider getPushProvider(SQLPushRequest pushRequest) throws SQLEngineException {
       return null;
     }
 
     @Override
-    public InputFormatProvider getPullProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
+    public InputFormatProvider getPullProvider(SQLPullRequest pullRequest) throws SQLEngineException {
       return null;
     }
 
@@ -1156,17 +1159,17 @@ public class PipelineSpecGeneratorTest {
     }
 
     @Override
-    public boolean canJoin(JoinDefinition definition) {
+    public boolean canJoin(SQLJoinRequest joinRequest) {
       return false;
     }
 
     @Override
-    public SQLOperationResult join(String datasetName, JoinDefinition definition) throws SQLEngineException {
+    public SQLOperationResult join(SQLJoinRequest joinRequest) throws SQLEngineException {
       return null;
     }
 
     @Override
-    public void cleanup(boolean forceStop) {
+    public void cleanup(String datasetName) throws SQLEngineException {
 
     }
 

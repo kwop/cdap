@@ -30,7 +30,7 @@ import io.cdap.cdap.api.spark.JavaSparkMain;
 import io.cdap.cdap.api.workflow.WorkflowToken;
 import io.cdap.cdap.etl.api.JoinElement;
 import io.cdap.cdap.etl.api.batch.BatchSource;
-import io.cdap.cdap.etl.api.engine.SQLEngine;
+import io.cdap.cdap.etl.api.engine.sql.SQLEngine;
 import io.cdap.cdap.etl.api.join.JoinDefinition;
 import io.cdap.cdap.etl.batch.BatchPhaseSpec;
 import io.cdap.cdap.etl.batch.PipelinePluginInstantiator;

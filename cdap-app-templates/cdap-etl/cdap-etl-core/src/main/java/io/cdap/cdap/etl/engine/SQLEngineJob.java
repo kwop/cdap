@@ -86,6 +86,12 @@ public class SQLEngineJob<T> {
     return task;
   }
 
+  public void cancel() {
+    if (!task.isDone() || task.isCompletedExceptionally() || task.isCancelled()) {
+      task.cancel(true);
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

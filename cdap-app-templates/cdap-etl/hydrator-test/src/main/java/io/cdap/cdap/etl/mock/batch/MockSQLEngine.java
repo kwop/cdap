@@ -19,27 +19,28 @@ package io.cdap.cdap.etl.mock.batch;
 import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
-import io.cdap.cdap.api.data.schema.Schema;
 import io.cdap.cdap.api.dataset.lib.KeyValue;
 import io.cdap.cdap.etl.api.PipelineConfigurer;
 import io.cdap.cdap.etl.api.Transform;
 import io.cdap.cdap.etl.api.batch.BatchContext;
-import io.cdap.cdap.etl.api.engine.SQLEngine;
-import io.cdap.cdap.etl.api.engine.SQLEngineException;
-import io.cdap.cdap.etl.api.engine.SQLOperationResult;
-import io.cdap.cdap.etl.api.join.JoinDefinition;
+import io.cdap.cdap.etl.api.engine.sql.SQLEngine;
+import io.cdap.cdap.etl.api.engine.sql.SQLEngineException;
+import io.cdap.cdap.etl.api.engine.sql.SQLOperationResult;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLJoinRequest;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLPullRequest;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLPushRequest;
 
 /**
  * Mock SQL engine that can be used to test join pipelines.
  */
 public class MockSQLEngine implements SQLEngine<Object, Object, Object, Object> {
   @Override
-  public OutputFormatProvider getPushProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
+  public OutputFormatProvider getPushProvider(SQLPushRequest pushRequest) throws SQLEngineException {
     return null;
   }
 
   @Override
-  public InputFormatProvider getPullProvider(String datasetName, Schema datasetSchema) throws SQLEngineException {
+  public InputFormatProvider getPullProvider(SQLPullRequest pullRequest) throws SQLEngineException {
     return null;
   }
 
@@ -49,17 +50,17 @@ public class MockSQLEngine implements SQLEngine<Object, Object, Object, Object> 
   }
 
   @Override
-  public boolean canJoin(JoinDefinition definition) {
+  public boolean canJoin(SQLJoinRequest joinRequest) {
     return false;
   }
 
   @Override
-  public SQLOperationResult join(String datasetName, JoinDefinition definition) throws SQLEngineException {
+  public SQLOperationResult join(SQLJoinRequest joinRequest) throws SQLEngineException {
     return null;
   }
 
   @Override
-  public void cleanup(boolean forceStop) {
+  public void cleanup(String datasetName) throws SQLEngineException {
 
   }
 

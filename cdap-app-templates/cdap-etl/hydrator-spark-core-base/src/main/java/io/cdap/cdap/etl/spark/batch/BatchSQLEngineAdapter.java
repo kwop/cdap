@@ -21,8 +21,11 @@ import io.cdap.cdap.api.data.batch.InputFormatProvider;
 import io.cdap.cdap.api.data.batch.OutputFormatProvider;
 import io.cdap.cdap.api.data.format.StructuredRecord;
 import io.cdap.cdap.api.data.schema.Schema;
-import io.cdap.cdap.etl.api.engine.SQLEngine;
-import io.cdap.cdap.etl.api.engine.SQLOperationResult;
+import io.cdap.cdap.etl.api.engine.sql.SQLEngine;
+import io.cdap.cdap.etl.api.engine.sql.SQLOperationResult;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLJoinRequest;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLPullRequest;
+import io.cdap.cdap.etl.api.engine.sql.request.SQLPushRequest;
 import io.cdap.cdap.etl.api.join.JoinDefinition;
 import io.cdap.cdap.etl.engine.SQLEngineJob;
 import io.cdap.cdap.etl.engine.SQLEngineJobType;
@@ -69,24 +72,25 @@ public class BatchSQLEngineAdapter {
   /**
    * Creates a new job tu push a SparkCollection into the SQL engine.
    *
-   * @param tableName  the name of the dataset to push
-   * @param collection the Spark collection containing the dataset to push
+   * @param datasetName the name of the dataset to push
+   * @param collection  the Spark collection containing the dataset to push
    * @return Job representing this Push operation.
    */
   @SuppressWarnings("unchecked,raw")
-  public SQLEngineJob<?> push(String tableName,
+  public SQLEngineJob<?> push(String datasetName,
                               Schema schema,
                               SparkCollection<StructuredRecord> collection) {
     CompletableFuture<Void> future = CompletableFuture.supplyAsync(() -> {
-      OutputFormatProvider outputFormatProvider = sqlEngine.getPushProvider(tableName, schema);
+      SQLPushRequest pushRequest = new SQLPushRequest(datasetName, schema);
+      OutputFormatProvider outputFormatProvider = sqlEngine.getPushProvider(pushRequest);
       JavaPairRDD<?, ?> pairRdd =
         ((JavaRDD) collection.getUnderlying()).flatMapToPair(toPairFunction);
       RDDUtils.saveUsingOutputFormat(outputFormatProvider, pairRdd);
       return null;
     }, executorService);
 
-    SQLEngineJob<Void> job = new SQLEngineJob<>(tableName, SQLEngineJobType.PUSH, future);
-    jobs.put(tableName, job);
+    SQLEngineJob<Void> job = new SQLEngineJob<>(datasetName, SQLEngineJobType.PUSH, future);
+    jobs.put(datasetName, job);
 
     return job;
   }
@@ -94,17 +98,17 @@ public class BatchSQLEngineAdapter {
   /**
    * Creates a new job to pull a Spark Collection from the SQL engine
    *
-   * @param tableName the name of the dataset to push
-   * @param jsc       the Java Spark Context to use when mapping records.
+   * @param datasetName the name of the dataset to push
+   * @param jsc         the Java Spark Context to use when mapping records.
    * @return Job representing this pull operation.
    */
   @SuppressWarnings("unchecked,raw")
-  public SQLEngineJob<JavaRDD<StructuredRecord>> pull(String tableName,
+  public SQLEngineJob<JavaRDD<StructuredRecord>> pull(String datasetName,
                                                       Schema schema,
                                                       JavaSparkContext jsc) {
     CompletableFuture<JavaRDD<StructuredRecord>> future = CompletableFuture.supplyAsync(() -> {
-
-      InputFormatProvider inputFormatProvider = sqlEngine.getPullProvider(tableName, schema);
+      SQLPullRequest pullRequest = new SQLPullRequest(datasetName, schema);
+      InputFormatProvider inputFormatProvider = sqlEngine.getPullProvider(pullRequest);
 
       ClassLoader classLoader = Objects.firstNonNull(currentThread().getContextClassLoader(),
                                                      getClass().getClassLoader());
@@ -115,29 +119,31 @@ public class BatchSQLEngineAdapter {
       return pairRDD.flatMap(fromPairFunction);
     });
 
-    SQLEngineJob<JavaRDD<StructuredRecord>> job = new SQLEngineJob<>(tableName, SQLEngineJobType.PULL, future);
-    jobs.put(tableName, job);
+    SQLEngineJob<JavaRDD<StructuredRecord>> job = new SQLEngineJob<>(datasetName, SQLEngineJobType.PULL, future);
+    jobs.put(datasetName, job);
 
     return job;
   }
 
   /**
    * Executes a Join operation in the SQL engine
-   * @param tableName the table name to use to store the result of the join operation
+   *
+   * @param datasetName    the dataset name to use to store the result of the join operation
    * @param joinDefinition the Join Definition
    * @return Job representing this join operation
    */
-  public SQLEngineJob<SQLOperationResult> join(String tableName, JoinDefinition joinDefinition) {
-    if (!sqlEngine.canJoin(joinDefinition)) {
+  public SQLEngineJob<SQLOperationResult> join(String datasetName, JoinDefinition joinDefinition) {
+    SQLJoinRequest joinRequest = new SQLJoinRequest(datasetName, joinDefinition);
+    if (!sqlEngine.canJoin(joinRequest)) {
       throw new IllegalArgumentException("Unable to execute this join in the SQL engine");
     }
 
     CompletableFuture<SQLOperationResult> future = CompletableFuture.supplyAsync(() -> {
-      return sqlEngine.join(tableName, joinDefinition);
+      return sqlEngine.join(joinRequest);
     });
 
-    SQLEngineJob<SQLOperationResult> job = new SQLEngineJob<>(tableName, SQLEngineJobType.JOIN, future);
-    jobs.put(tableName, job);
+    SQLEngineJob<SQLOperationResult> job = new SQLEngineJob<>(datasetName, SQLEngineJobType.JOIN, future);
+    jobs.put(datasetName, job);
 
     return job;
   }
@@ -146,7 +152,10 @@ public class BatchSQLEngineAdapter {
    * Stops all jobs from executing and cleans up the SQL engine.
    */
   public void cancel() {
+    for (String dataset : jobs.keySet()) {
+      jobs.get(dataset).cancel();
+      sqlEngine.cleanup(dataset);
+    }
     executorService.shutdown();
-    sqlEngine.cleanup(true);
   }
 }

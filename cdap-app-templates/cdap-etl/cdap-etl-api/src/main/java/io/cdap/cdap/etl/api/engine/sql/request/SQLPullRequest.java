@@ -14,13 +14,29 @@
  * the License.
  */
 
-package io.cdap.cdap.etl.api.engine;
+package io.cdap.cdap.etl.api.engine.sql.request;
+
+import io.cdap.cdap.api.annotation.Beta;
+import io.cdap.cdap.api.data.schema.Schema;
 
 /**
- * Class used to represent exceptions thrown by a SQL Engine.
+ * Class representing a Request to pull a dataset from a SQL engine.
  */
-public class SQLEngineException extends RuntimeException {
-  public SQLEngineException(Throwable cause) {
-    super("Error when executing operation on SQL Engine", cause);
+@Beta
+public class SQLPullRequest {
+  private final String datasetName;
+  private final Schema datasetSchema;
+
+  public SQLPullRequest(String datasetName, Schema datasetSchema) {
+    this.datasetName = datasetName;
+    this.datasetSchema = datasetSchema;
+  }
+
+  public String getDatasetName() {
+    return datasetName;
+  }
+
+  public Schema getDatasetSchema() {
+    return datasetSchema;
   }
 }

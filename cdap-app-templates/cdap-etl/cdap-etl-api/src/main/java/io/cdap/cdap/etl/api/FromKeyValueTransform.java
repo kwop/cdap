@@ -23,7 +23,7 @@ import io.cdap.cdap.api.dataset.lib.KeyValue;
  * Interface for an entity which allows the transformation between an object of a given Type from a KeyValue pair.
  *
  * This interface is used when mapping records into and out of storage engines, and allows us to reuse some of the
- * logic present in our exisitng Batch Sources and Batch Sinks.
+ * logic present in our existing Batch Sources.
  *
  * @param <TYPE> The Record Type
  * @param <KEY_IN> Type for input key when building records
