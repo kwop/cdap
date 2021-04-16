@@ -17,6 +17,7 @@ package io.cdap.cdap.common.utils;
 
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
+import io.cdap.cdap.runtime.spi.VersionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ public final class ProjectInfo {
   /**
    * This class encapsulates information about project version.
    */
-  public static final class Version implements Comparable<Version> {
+  public static final class Version implements VersionInfo {
     private final int major;
     private final int minor;
     private final int fix;
@@ -155,7 +156,13 @@ public final class ProjectInfo {
     }
 
     @Override
-    public int compareTo(Version o) {
+    public int compareTo(Object other) {
+      Version o;
+      if (other instanceof Version) {
+        o = (Version) other;
+      } else {
+        o = new Version(other.toString());
+      }
       // Version comparison by major.minor.fix
       int cmp = Ints.compare(major, o.major);
       if (cmp != 0) {
