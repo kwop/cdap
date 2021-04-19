@@ -158,12 +158,11 @@ public class ArtifactInspectorTest {
           "y", new PluginPropertyField("y", "", "double", true, true),
           "isSomething", new PluginPropertyField("isSomething", "", "boolean", true, false)));
       PluginClass multipleRequirementPlugin = new PluginClass(
-        InspectionApp.PLUGIN_TYPE, InspectionApp.MULTIPLE_REQUIREMENTS_PLUGIN, InspectionApp.PLUGIN_DESCRIPTION,
-        InspectionApp.MultipleRequirementsPlugin.class.getName(), "pluginConf",
-        ImmutableMap.of(
+        InspectionApp.PLUGIN_TYPE, InspectionApp.MULTIPLE_REQUIREMENTS_PLUGIN, InspectionApp.PLUGIN_CATEGORY,
+        InspectionApp.MultipleRequirementsPlugin.class.getName(), "pluginConf", ImmutableMap.of(
           "y", new PluginPropertyField("y", "", "double", true, true),
           "isSomething", new PluginPropertyField("isSomething", "", "boolean", true, false)),
-        new Requirements(ImmutableSet.of(Table.TYPE, KeyValueTable.TYPE)));
+        new Requirements(ImmutableSet.of(Table.TYPE, KeyValueTable.TYPE)), InspectionApp.PLUGIN_DESCRIPTION);
       Assert.assertTrue(classes.getPlugins().containsAll(ImmutableSet.of(expectedPlugin, multipleRequirementPlugin)));
     }
   }

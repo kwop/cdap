@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 public class PluginClass {
   private final String type;
   private final String name;
+  private final String category;
   private final String description;
   private final String className;
   private final String configFieldName;
@@ -43,17 +44,19 @@ public class PluginClass {
     this.type = Plugin.DEFAULT_TYPE;
     this.name = null;
     this.description = "";
+    this.category = null;
     this.className = null;
     this.configFieldName = null;
     this.properties = Collections.emptyMap();
     this.requirements = Requirements.EMPTY;
   }
 
-  public PluginClass(String type, String name, String description, String className,
+  public PluginClass(String type, String name, @Nullable String category, String className,
                      @Nullable String configfieldName, Map<String, PluginPropertyField> properties,
-                     Requirements requirements) {
+                     Requirements requirements, String description) {
     this.type = type;
     this.name = name;
+    this.category = category;
     this.description = description;
     this.className = className;
     this.configFieldName = configfieldName;
@@ -63,7 +66,7 @@ public class PluginClass {
 
   public PluginClass(String type, String name, String description, String className, @Nullable String configfieldName,
                      Map<String, PluginPropertyField> properties) {
-    this(type, name, description, className, configfieldName, properties, Requirements.EMPTY);
+    this(type, name, null, className, configfieldName, properties, Requirements.EMPTY, description);
   }
 
   /**
@@ -104,6 +107,15 @@ public class PluginClass {
    */
   public String getName() {
     return name;
+  }
+
+  /**
+   * Returns the category of the plugin.
+   * If a plugin does not belong to any category, {@code null} will be returned.
+   */
+  @Nullable
+  public String getCategory() {
+    return category;
   }
 
   /**
@@ -156,6 +168,7 @@ public class PluginClass {
 
     return Objects.equals(type, that.type)
       && Objects.equals(name, that.name)
+      && Objects.equals(category, that.category)
       && Objects.equals(description, that.description)
       && Objects.equals(className, that.className)
       && Objects.equals(configFieldName, that.configFieldName)
@@ -165,7 +178,7 @@ public class PluginClass {
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, name, description, className, configFieldName, properties, requirements);
+    return Objects.hash(type, name, category, description, className, configFieldName, properties, requirements);
   }
 
   @Override
@@ -173,6 +186,7 @@ public class PluginClass {
     return "PluginClass{" +
       "type='" + type + '\'' +
       ", name='" + name + '\'' +
+      ", category='" + category + '\'' +
       ", description='" + description + '\'' +
       ", className='" + className + '\'' +
       ", configFieldName='" + configFieldName + '\'' +

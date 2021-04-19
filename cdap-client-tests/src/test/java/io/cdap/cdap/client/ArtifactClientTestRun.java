@@ -301,15 +301,15 @@ public class ArtifactClientTestRun extends ClientTestBase {
 
     // test get plugins of type callable for myapp-2.0.0
     PluginSummary pluginSummary =
-      new PluginSummary("plugin1", "callable", "p1 description", Plugin1.class.getName(), pluginArtifactSummary);
+      new PluginSummary("plugin1", "callable", null, Plugin1.class.getName(), pluginArtifactSummary, "p1 description");
     Assert.assertEquals(Sets.newHashSet(pluginSummary),
                         Sets.newHashSet(artifactClient.getPluginSummaries(myapp2Id, "callable")));
     // no plugins of type "runnable"
     Assert.assertTrue(artifactClient.getPluginSummaries(myapp2Id, "runnable").isEmpty());
 
     // test get plugin details for plugin1 for myapp-2.0.0
-    PluginInfo pluginInfo = new PluginInfo("plugin1", "callable", "p1 description", Plugin1.class.getName(), "conf",
-      pluginArtifactSummary, props);
+    PluginInfo pluginInfo = new PluginInfo("plugin1", "callable", null, Plugin1.class.getName(), "conf",
+                                           pluginArtifactSummary, props, "p1 description");
     Assert.assertEquals(Sets.newHashSet(pluginInfo),
                         Sets.newHashSet(artifactClient.getPluginInfo(myapp2Id, "callable", "plugin1")));
   }

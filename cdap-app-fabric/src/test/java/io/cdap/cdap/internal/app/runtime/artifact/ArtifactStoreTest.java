@@ -640,63 +640,56 @@ public abstract class ArtifactStoreTest {
     );
 
     PluginClass excludedPlugin1 = new PluginClass(
-      "A", "excludedPlugin1", "desc", "c.p1", "cfg",
-      ImmutableMap.of(
+      "A", "excludedPlugin1", null, "c.p1", "cfg", ImmutableMap.of(
         "threshold", new PluginPropertyField("thresh", "description", "double", true, false),
         "retry", new PluginPropertyField("retries", "description", "int", false, false)
-      ), new Requirements(ImmutableSet.of(Table.TYPE))
+      ), new Requirements(ImmutableSet.of(Table.TYPE)), "desc"
     );
 
     PluginClass excludedPlugin2 = new PluginClass(
-      "A", "excludedPlugin2", "desc", "c.p1", "cfg",
-      ImmutableMap.of(
+      "A", "excludedPlugin2", null, "c.p1", "cfg", ImmutableMap.of(
         "threshold", new PluginPropertyField("thresh", "description", "double", true, false),
         "retry", new PluginPropertyField("retries", "description", "int", false, false)
-      ), new Requirements(ImmutableSet.of(KeyValueTable.TYPE))
+      ), new Requirements(ImmutableSet.of(KeyValueTable.TYPE)), "desc"
     );
 
     PluginClass excludedPlugin3 = new PluginClass(
-      "A", "excludedPlugin3", "desc", "c.p1", "cfg",
-      ImmutableMap.of(
+      "A", "excludedPlugin3", null, "c.p1", "cfg", ImmutableMap.of(
         "threshold", new PluginPropertyField("thresh", "description", "double", true, false),
         "retry", new PluginPropertyField("retries", "description", "int", false, false)
-      ), new Requirements(ImmutableSet.of(Table.TYPE, KeyValueTable.TYPE))
+      ), new Requirements(ImmutableSet.of(Table.TYPE, KeyValueTable.TYPE)), "desc"
     );
 
 
     PluginClass excludedPlugin4 = new PluginClass(
-      "A", "excludedPlugin4", "desc", "c.p1", "cfg",
-      ImmutableMap.of(
+      "A", "excludedPlugin4", null, "c.p1", "cfg", ImmutableMap.of(
         "threshold", new PluginPropertyField("thresh", "description", "double", true, false),
         "retry", new PluginPropertyField("retries", "description", "int", false, false)
-      ), new Requirements(ImmutableSet.of(Table.TYPE, KeyValueTable.TYPE, Cube.TYPE))
+      ), new Requirements(ImmutableSet.of(Table.TYPE, KeyValueTable.TYPE, Cube.TYPE)), "desc"
     );
 
 
     PluginClass excludedPlugin5 = new PluginClass(
-      "A", "excludedPlugin5", "desc", "c.p1", "cfg",
-      ImmutableMap.of(
+      "A", "excludedPlugin5", null, "c.p1", "cfg", ImmutableMap.of(
         "threshold", new PluginPropertyField("thresh", "description", "double", true, false),
         "retry", new PluginPropertyField("retries", "description", "int", false, false)
-      ), new Requirements(ImmutableSet.of(Table.TYPE, Cube.TYPE))
+      ), new Requirements(ImmutableSet.of(Table.TYPE, Cube.TYPE)), "desc"
     );
 
 
     PluginClass includedPlugin2 = new PluginClass(
-      "A", "includedPlugin2", "desc", "c.p1", "cfg",
-      ImmutableMap.of(
+      "A", "includedPlugin2", null, "c.p1", "cfg", ImmutableMap.of(
         "threshold", new PluginPropertyField("thresh", "description", "double", true, false),
         "retry", new PluginPropertyField("retries", "description", "int", false, false)
-      ), new Requirements(ImmutableSet.of("noTransactionNeeded"))
+      ), new Requirements(ImmutableSet.of("noTransactionNeeded")), "desc"
     );
 
 
     PluginClass includedPlugin3 = new PluginClass(
-      "A", "includedPlugin3", "desc", "c.p1", "cfg",
-      ImmutableMap.of(
+      "A", "includedPlugin3", null, "c.p1", "cfg", ImmutableMap.of(
         "threshold", new PluginPropertyField("thresh", "description", "double", true, false),
         "retry", new PluginPropertyField("retries", "description", "int", false, false)
-      ), new Requirements(ImmutableSet.of("noTransactionNeeded", "tpfs"))
+      ), new Requirements(ImmutableSet.of("noTransactionNeeded", "tpfs")), "desc"
     );
 
     Id.Artifact artifactId = Id.Artifact.from(Id.Namespace.DEFAULT, "ArtifactWithTransactionalPlugins", "1.0.0");

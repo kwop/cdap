@@ -22,6 +22,7 @@ import com.google.common.collect.Maps;
 import com.google.common.primitives.Primitives;
 import com.google.common.reflect.TypeToken;
 import io.cdap.cdap.api.Config;
+import io.cdap.cdap.api.annotation.Category;
 import io.cdap.cdap.api.annotation.Description;
 import io.cdap.cdap.api.annotation.Macro;
 import io.cdap.cdap.api.annotation.Name;
@@ -240,8 +241,9 @@ final class ArtifactInspector {
         try {
           String configField = getProperties(TypeToken.of(cls), pluginProperties);
           PluginClass pluginClass = new PluginClass(pluginAnnotation.type(), getPluginName(cls),
-                                                    getPluginDescription(cls), cls.getName(),
-                                                    configField, pluginProperties, getArtifactRequirements(cls));
+                                                    getPluginCategory(cls), cls.getName(), configField,
+                                                    pluginProperties, getArtifactRequirements(cls),
+                                                    getPluginDescription(cls));
           builder.addPlugin(pluginClass);
         } catch (UnsupportedTypeException e) {
           LOG.warn("Plugin configuration type not supported. Plugin ignored. {}", cls, e);
@@ -339,6 +341,11 @@ final class ArtifactInspector {
   private String getPluginName(Class<?> cls) {
     Name annotation = cls.getAnnotation(Name.class);
     return annotation == null || annotation.value().isEmpty() ? cls.getName() : annotation.value();
+  }
+
+  private String getPluginCategory(Class<?> cls) {
+    Category category = cls.getAnnotation(Category.class);
+    return category == null || category.value().isEmpty() ? null : category.value();
   }
 
   /**
