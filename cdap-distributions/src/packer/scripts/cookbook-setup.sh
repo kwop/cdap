@@ -34,8 +34,8 @@ knife cookbook site download --force apt 6.1.4 || die "Cannot download cookbook 
 knife cookbook site download --force ark 3.1.0 || die "Cannot download cookbook ark"
 knife cookbook site download --force build-essential 8.1.1 || die "Cannot download cookbook build-essential"
 #knife cookbook site download --force cdap 3.7.0 || die "Cannot download cookbook cdap"
-git clone https://github.com/kwop/cdap_cookbook
-tar -zcvf cdap.tar.gz -s /^cdap_cookbook/cdap/ cdap_cookbook
+git clone https://github.com/kwop/cdap_cookbook cdap
+tar -zcvf cdap.tar.gz cdap
 knife cookbook site download --force dpkg_autostart 0.2.0 || die "Cannot download cookbook dpkg_autostart"
 knife cookbook site download --force hadoop 2.13.0 || die "Cannot download cookbook hadoop"
 knife cookbook site download --force homebrew 5.0.4 || die "Cannot download cookbook homebrew"
